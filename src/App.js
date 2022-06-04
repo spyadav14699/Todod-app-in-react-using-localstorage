@@ -1,7 +1,9 @@
-import { useState, useRef} from 'react';
+import { useState, useRef, useEffect} from 'react';
 import './App.css';
 import Todolist from './components/Todolist';
-import uuidv4 from 'uuid/v4';
+
+const LOCAL_STORAGE_KEY = 'todosAPP.todose';
+
 
 function App() {
 
@@ -9,15 +11,25 @@ function App() {
 
   const todonameref = useRef();
 
+  
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
+  }, [todos]);
+
+  useEffect(() => {
+    localStorage.getItem(LOCAL_STORAGE_KEY) && setTodos(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)));
+  }, []);
+  
+
   function handleAddtodo(e) {
-    e.preventDefault();
+  e.preventDefault();
     const newtodo = todonameref.current.value;
     if (newtodo === '') {
       alert('Please enter a todo');
       return;
     }
     setTodos(prevTodos => {
-      return [...prevTodos, {id: uuidv4(), name: newtodo, completed: false}];
+      return [...prevTodos, {id: Math.random() , name: newtodo, completed: false}];
     });
     todonameref.current.value = '';
   }
